@@ -1,18 +1,18 @@
 from faker import Faker
 import requests
-import variables
+from variables import Urls
 import allure
 
 
 class Helpers:
     @allure.step('Удаление курьера')
     def delete_courier(self, login, password):
-        r = requests.post(f'{variables.url}/api/v1/courier/login', data={
+        r = requests.post(Urls.login_courier, data={
             "login": login,
             "password": password
         })
         id = r.json()['id']
-        requests.delete(f'{variables.url}/api/v1/courier/{id}')
+        requests.delete(f'{Urls.delete_courier}/{id}')
 
     @allure.step('Генератор данных для регистрации курьера')
     def data_generate(self):
@@ -28,4 +28,4 @@ class Helpers:
             "login": login,
             "password": password,
         }
-        return requests.post(f'{variables.url}/api/v1/courier', data=payload)
+        return requests.post(Urls.create_courier, data=payload)

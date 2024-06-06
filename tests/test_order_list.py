@@ -1,10 +1,10 @@
 import requests
-import variables
+from variables import Urls, MessageText
 import allure
 
 class TestOrderList:
     @allure.title('Получение списка заказов')
     def test_order_list(self):
-        response = requests.get(f'{variables.url}/api/v1/orders')
+        response = requests.get(Urls.order_list)
         assert response.status_code == 200
-        assert variables.order_list in response.text
+        assert MessageText.order_list in response.text

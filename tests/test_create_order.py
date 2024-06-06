@@ -1,5 +1,5 @@
 import requests
-import variables
+from variables import Urls, MessageText, Data
 import allure
 import pytest
 from helpers import Helpers
@@ -8,7 +8,7 @@ from helpers import Helpers
 class TestCreateOrder(Helpers):
     @pytest.mark.parametrize(
         'first_name, last_name, address, metro_station, phone, rent_time, delivery_date, comment, color',
-        variables.order_data)
+        Data.order_data)
     @allure.title('Заказ с выбором цвета')
     def test_create_order(self, first_name, last_name, address, metro_station, phone, rent_time, delivery_date, comment,
                           color):
@@ -23,6 +23,6 @@ class TestCreateOrder(Helpers):
             "comment": comment,
             "color": [color]
         }
-        response = requests.post(f'{variables.url}/api/v1/orders', json=payload)
+        response = requests.post(Urls.create_order, json=payload)
         assert response.status_code == 201
-        assert variables.create_order in response.text
+        assert MessageText.create_order in response.text

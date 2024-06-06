@@ -1,5 +1,5 @@
 import requests
-import variables
+from variables import Urls, MessageText
 import allure
 from helpers import Helpers
 
@@ -13,9 +13,9 @@ class TestCreateCourier(Helpers):
             "password": password,
             "firstName": name
         }
-        response = requests.post(f'{variables.url}/api/v1/courier', data=payload)
+        response = requests.post(Urls.create_courier, data=payload)
         assert response.status_code == 201
-        assert response.text == variables.create_courier
+        assert response.text == MessageText.create_courier
         self.delete_courier(login, password)
 
     @allure.title('Создание курьера с повторяющимся логином')
@@ -26,12 +26,11 @@ class TestCreateCourier(Helpers):
             "password": password,
             "firstName": name
         }
-        response = requests.post(f'{variables.url}/api/v1/courier', data=payload)
-        if response.status_code == 201:
-            response_duplicate = requests.post(f'{variables.url}/api/v1/courier', data=payload)
-            assert response_duplicate.status_code == 409
-            assert variables.create_courier_duplicate in response_duplicate.text
-            self.delete_courier(login, password)
+        requests.post(Urls.create_courier, data=payload)
+        response = requests.post(Urls.create_courier, data=payload)
+        assert response.status_code == 409
+        assert MessageText.create_courier_duplicate in response.text
+        self.delete_courier(login, password)
 
     @allure.title('Создание курьера без логина')
     def test_create_courier_without_login(self):
@@ -40,9 +39,9 @@ class TestCreateCourier(Helpers):
             "password": password,
             "firstName": name
         }
-        response = requests.post(f'{variables.url}/api/v1/courier', data=payload)
+        response = requests.post(Urls.create_courier, data=payload)
         assert response.status_code == 400
-        assert variables.create_courier_without_data in response.text
+        assert MessageText.create_courier_without_data in response.text
 
     @allure.title('Создание курьера без пароля')
     def test_create_courier_without_password(self):
@@ -51,9 +50,9 @@ class TestCreateCourier(Helpers):
             "login": login,
             "firstName": name
         }
-        response = requests.post(f'{variables.url}/api/v1/courier', data=payload)
+        response = requests.post(Urls.create_courier, data=payload)
         assert response.status_code == 400
-        assert variables.create_courier_without_data in response.text
+        assert MessageText.create_courier_without_data in response.text
 
     @allure.title('Создание курьера без имени')
     def test_create_courier_without_name(self):
@@ -62,7 +61,7 @@ class TestCreateCourier(Helpers):
             "login": login,
             "password": password,
         }
-        response = requests.post(f'{variables.url}/api/v1/courier', data=payload)
+        response = requests.post(Urls.create_courier, data=payload)
         assert response.status_code == 201
-        assert response.text == variables.create_courier
+        assert response.text == MessageText.create_courier
         self.delete_courier(login, password)

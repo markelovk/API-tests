@@ -1,5 +1,5 @@
 import requests
-import variables
+from variables import Urls, MessageText
 import allure
 from helpers import Helpers
 
@@ -13,9 +13,9 @@ class TestLoginCourier(Helpers):
             "login": login,
             "password": password
         }
-        response = requests.post(f'{variables.url}/api/v1/courier/login', data=payload)
+        response = requests.post(Urls.login_courier, data=payload)
         assert response.status_code == 200
-        assert variables.id in response.text
+        assert MessageText.id in response.text
         self.delete_courier(login, password)
 
     @allure.title('Авторизация курьером без логина')
@@ -26,9 +26,9 @@ class TestLoginCourier(Helpers):
             "login": '',
             "password": password
         }
-        response = requests.post(f'{variables.url}/api/v1/courier/login', data=payload)
+        response = requests.post(Urls.login_courier, data=payload)
         assert response.status_code == 400
-        assert variables.login_courier_without_data in response.text
+        assert MessageText.login_courier_without_data in response.text
         self.delete_courier(login, password)
 
     @allure.title('Авторизация курьером без пароля')
@@ -39,9 +39,9 @@ class TestLoginCourier(Helpers):
             "login": login,
             "password": ''
         }
-        response = requests.post(f'{variables.url}/api/v1/courier/login', data=payload)
+        response = requests.post(Urls.login_courier, data=payload)
         assert response.status_code == 400
-        assert variables.login_courier_without_data in response.text
+        assert MessageText.login_courier_without_data in response.text
         self.delete_courier(login, password)
 
     @allure.title('Авторизация курьером без данных')
@@ -50,17 +50,17 @@ class TestLoginCourier(Helpers):
             "login": '',
             "password": ''
         }
-        response = requests.post(f'{variables.url}/api/v1/courier/login', data=payload)
+        response = requests.post(Urls.login_courier, data=payload)
         assert response.status_code == 400
-        assert variables.login_courier_without_data in response.text
+        assert MessageText.login_courier_without_data in response.text
 
-    @allure.title('Авторизация курьером с несузествующими данными')
+    @allure.title('Авторизация курьером с несуществующими данными')
     def test_login_with_wrong_data(self):
         login, password, _ = self.data_generate()
         payload = {
             "login": login,
             "password": password
         }
-        response = requests.post(f'{variables.url}/api/v1/courier/login', data=payload)
+        response = requests.post(Urls.login_courier, data=payload)
         assert response.status_code == 404
-        assert variables.login_courier_with_wrong_data in response.text
+        assert MessageText.login_courier_with_wrong_data in response.text
